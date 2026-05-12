@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Platform } from 'react-native';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
@@ -12,18 +12,24 @@ import { theme } from '@/lib/theme';
 /**
  * Landing / sign-in screen. Mock-mode signs anyone in instantly — Supabase
  * Auth email magic-link wiring goes in here when keys are configured.
+ *
+ * If the user is already signed in, we redirect them to the tabs root
+ * instead of rendering this screen (handles "back button" + URL-typed
+ * navigation cases on the web build).
  */
-export default function AuthIndex() {
+export default function SignInScreen() {
+  const signedIn = useAuthStore((s) => s.signedIn);
   const signIn = useAuthStore((s) => s.signIn);
   const [email, setEmail] = useState('you@example.ie');
   const [loading, setLoading] = useState(false);
 
+  if (signedIn) return <Redirect href="/" />;
+
   const onContinue = async () => {
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 250));
+    await new Promise((r) => setTimeout(r, 200));
     signIn(email);
     setLoading(false);
-    // Explicit nav so the URL updates immediately on the web build.
     router.replace('/');
   };
 

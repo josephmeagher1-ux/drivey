@@ -7,7 +7,7 @@ import { BrandHeader } from '@/components/BrandHeader';
 
 export default function TabsLayout() {
   const signedIn = useAuthStore((s) => s.signedIn);
-  if (!signedIn) return <Redirect href="/(auth)" />;
+  if (!signedIn) return <Redirect href="/sign-in" />;
 
   return (
     <Tabs
